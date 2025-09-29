@@ -1,0 +1,46 @@
+{
+  "name": "seo-monitoring-backend",
+  "version": "1.0.0",
+  "description": "Backend for SEO monitoring, keyword & competitor tracking, and website analysis using Playwright and StackVerify DB",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "lint": "eslint . --ext .js",
+    "format": "prettier --write .",
+    "postinstall": "playwright install chromium"
+  },
+  "keywords": [
+    "seo",
+    "monitoring",
+    "playwright",
+    "nodejs",
+    "stackverify",
+    "backend",
+    "competitor-tracking"
+  ],
+  "author": "Morgan Milston",
+  "license": "MIT",
+  "dependencies": {
+    "@stackverify/db": "github:Frost-bit-star/stackverify-db",
+    "axios": "^1.6.1",
+    "cheerio": "^1.0.0-rc.12",
+    "cron": "^2.3.2",
+    "diff": "^5.1.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsdom": "^27.0.0",
+    "luxon": "^3.4.0",
+    "nodemailer": "^6.9.3",
+    "playwright": "^1.44.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.1",
+    "nodemon": "^3.1.0",
+    "prettier": "^3.6.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
