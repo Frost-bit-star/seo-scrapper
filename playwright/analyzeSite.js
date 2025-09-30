@@ -1,9 +1,8 @@
-
 import { chromium } from "playwright";
 import fs from "fs";
 import path from "path";
 
-export async function analyzeSite(url) {
+async function analyzeSite(url) {
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
 
@@ -16,6 +15,7 @@ export async function analyzeSite(url) {
     links: { internal: [], external: [], broken: [] },
     images: [],
     performance: {},
+    screenshot: "",
     timestamp: new Date(),
   };
 
@@ -75,3 +75,6 @@ export async function analyzeSite(url) {
 
   return result;
 }
+
+// ✅ Default export for ES module compatibility
+export default analyzeSite;
