@@ -1,16 +1,21 @@
 // index.js
-require('dotenv').config();
-const express = require('express');
-const bodyParser = require('body-parser');
-const path = require('path');
+import 'dotenv/config'; // automatically loads .env
+import express from 'express';
+import bodyParser from 'body-parser';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 // Import your Playwright monitors
-const analyzeSite = require('./playwright/analyzeSite'); // Make sure this exports a function
-const monitorCompetitor = require('./playwright/monitorCompetitor');
-const monitorKeywords = require('./playwright/monitorKeywords');
+import analyzeSite from './playwright/analyzeSite.js';
+import monitorCompetitor from './playwright/monitorCompetitor.js';
+import monitorKeywords from './playwright/monitorKeywords.js';
 
 // Import utilities
-const { sendAlert } = require('./utils/notify');
+import { sendAlert } from './utils/notify.js';
+
+// Fix __dirname in ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,7 +33,6 @@ app.post('/api/seo', async (req, res) => {
   try {
     const result = await analyzeSite(url);
 
-    // Send alert if broken links found
     if (result.brokenLinks && result.brokenLinks.length > 0) {
       await sendAlert(
         `SEO Alert: Broken links on ${url}`,
@@ -43,9 +47,7 @@ app.post('/api/seo', async (req, res) => {
   }
 });
 
-// ---------------------------
-// Competitor Monitor Endpoint
-// ---------------------------
+// Competitor Endpoint
 app.post('/api/competitor', async (req, res) => {
   const { url } = req.body;
   if (!url) return res.status(400).json({ error: 'Missing URL' });
@@ -59,9 +61,7 @@ app.post('/api/competitor', async (req, res) => {
   }
 });
 
-// ---------------------------
-// Keyword Monitor Endpoint
-// ---------------------------
+// Keyword Endpoint
 app.post('/api/keywords', async (req, res) => {
   const { url, keywords } = req.body;
   if (!url || !keywords) return res.status(400).json({ error: 'Missing parameters' });
@@ -75,9 +75,7 @@ app.post('/api/keywords', async (req, res) => {
   }
 });
 
-// ---------------------------
 // Start Server
-// ---------------------------
 app.listen(PORT, () => {
   console.log(`🚀 SEO Monitor API running on http://localhost:${PORT}`);
 });
