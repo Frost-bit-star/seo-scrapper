@@ -14,11 +14,17 @@
 //  try {
 //    await transporter.sendMail({
 //      from: `"SEO Monitor" <${process.env.SMTP_USER}>`,
-//     to,
+//      to,
 //      subject,
 //      html: htmlContent,
 //    });
-//    console.log(` Email sent to ${to}`);
+//    console.log(`Email sent to ${to}`);
 //  } catch (err) {
 //    console.error("Email sending error:", err.message);
+//  }
 //}
+
+// ✅ Placeholder export so the import doesn't break
+export function sendAlert() {
+  console.log("sendAlert is currently disabled.");
+}
