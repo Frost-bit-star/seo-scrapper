@@ -2,7 +2,7 @@ import { chromium } from "playwright";
 import fs from "fs";
 import path from "path";
 
-async function analyzeSite(url) {
+export async function analyzeSite(url) {
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
 
@@ -23,19 +23,14 @@ async function analyzeSite(url) {
     const response = await page.goto(url, { waitUntil: "load", timeout: 60000 });
     result.status = response.status();
 
-    // Extract page info
     result.title = await page.title();
     result.h1 = await page.$$eval("h1", els => els.map(el => el.innerText.trim()));
 
-    // Meta tags
     const metas = await page.$$eval("meta", els =>
       els.map(el => ({ name: el.getAttribute("name"), content: el.getAttribute("content") }))
     );
-    metas.forEach(m => {
-      if (m.name) result.meta[m.name.toLowerCase()] = m.content;
-    });
+    metas.forEach(m => { if (m.name) result.meta[m.name.toLowerCase()] = m.content; });
 
-    // Links
     const anchors = await page.$$eval("a", els => els.map(a => a.href));
     for (const link of anchors) {
       try {
@@ -48,18 +43,17 @@ async function analyzeSite(url) {
       }
     }
 
-    // Images
-    result.images = await page.$$eval("img", imgs => imgs.map(img => ({
-      src: img.src,
-      alt: img.alt,
-      width: img.width,
-      height: img.height
-    })));
+    result.images = await page.$$eval("img", imgs =>
+      imgs.map(img => ({
+        src: img.src,
+        alt: img.alt,
+        width: img.width,
+        height: img.height
+      }))
+    );
 
-    // Performance metrics
-    result.performance = await page.evaluate(() => JSON.stringify(window.performance.timing));
+    result.performance = JSON.parse(await page.evaluate(() => JSON.stringify(window.performance.timing)));
 
-    // Take screenshot
     const screenshotsDir = path.join(process.cwd(), "public", "screenshots");
     if (!fs.existsSync(screenshotsDir)) fs.mkdirSync(screenshotsDir, { recursive: true });
     const filename = path.join(screenshotsDir, `${Date.now()}.png`);
@@ -67,7 +61,7 @@ async function analyzeSite(url) {
     result.screenshot = filename;
 
   } catch (err) {
-    console.error("Playwright analyzeSite error:", err.message);
+    console.error("analyzeSite error:", err.message);
     result.error = err.message;
   } finally {
     await browser.close();
@@ -75,6 +69,3 @@ async function analyzeSite(url) {
 
   return result;
 }
-
-// ✅ Default export for ES module compatibility
-export default analyzeSite;
