@@ -9,7 +9,7 @@
     "dev": "nodemon index.js",
     "lint": "eslint . --ext .js",
     "format": "prettier --write .",
-    "postinstall": "npx playwright install chromium"
+    "postinstall": "npx playwright install chromium --with-deps"
   },
   "keywords": [
     "seo",
